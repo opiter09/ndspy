@@ -165,7 +165,7 @@ class BMG:
             while nextBytes != nullChar:
                 if nextBytes == escapeSequenceStart: # escape sequence
                     if currentStringStart and currentStringStart != offset:
-                        stringParts.append(DAT1[currentStringStart:offset].decode(self.fullEncoding))
+                        stringParts.append(DAT1[currentStringStart:offset].decode(self.fullEncoding, errors = "ignore"))
                     escapeLen, escapeType = DAT1[offset + len(escapeSequenceStart) : offset + len(escapeSequenceStart) + 2]
                     escapeData = DAT1[offset + len(escapeSequenceStart) + 2 : offset + escapeLen]
                     stringParts.append(Message.Escape(escapeType, escapeData))
@@ -177,7 +177,7 @@ class BMG:
                 nextBytes = DAT1[offset : offset + len(nullChar)]
 
             if currentStringStart and currentStringStart != offset:
-                stringParts.append(DAT1[currentStringStart:offset].decode(self.fullEncoding))
+                stringParts.append(DAT1[currentStringStart:offset].decode(self.fullEncoding, errors = "ignore"))
 
             self.messages.append(Message(attribs, stringParts, offset == 0))
 
