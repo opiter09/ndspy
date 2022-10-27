@@ -165,7 +165,7 @@ class BMG:
             while nextBytes != nullChar:
                 if nextBytes == escapeSequenceStart: # escape sequence
                     if currentStringStart and currentStringStart != offset:
-                        stringParts.append(DAT1[currentStringStart:offset].decode(self.fullEncoding, errors = "ignore"))
+                        stringParts.append(DAT1[currentStringStart:offset].decode(self.fullEncoding, errors = "surrogateescape"))
                     escapeLen, escapeType = DAT1[offset + len(escapeSequenceStart) : offset + len(escapeSequenceStart) + 2]
                     escapeData = DAT1[offset + len(escapeSequenceStart) + 2 : offset + escapeLen]
                     stringParts.append(Message.Escape(escapeType, escapeData))
@@ -177,7 +177,7 @@ class BMG:
                 nextBytes = DAT1[offset : offset + len(nullChar)]
 
             if currentStringStart and currentStringStart != offset:
-                stringParts.append(DAT1[currentStringStart:offset].decode(self.fullEncoding, errors = "ignore"))
+                stringParts.append(DAT1[currentStringStart:offset].decode(self.fullEncoding, errors = "surrogateescape"))
 
             self.messages.append(Message(attribs, stringParts, offset == 0))
 
@@ -417,7 +417,7 @@ class Message:
                     raise ValueError('Null character found in message during BMG saving')
                 if '\x1A' in part:
                     raise ValueError('\\x1A character found in message during BMG saving')
-                data.extend(part.encode(encoding))
+                data.extend(part.encode(encoding, errors = "surrogateescape"))
             else:
                 data.extend(part.save(encoding))
         data.extend('\0'.encode(encoding))
